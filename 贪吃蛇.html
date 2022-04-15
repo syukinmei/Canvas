@@ -43,6 +43,10 @@
                 foodX = Math.floor(Math.random() * ctx.canvas.width / size) * size;
                 foodY = Math.floor(Math.random() * ctx.canvas.width / size) * size;
 
+                // 解决食物出现位置位于蛇身上的情况
+                let has = map.some(elm => elm.x === foodX && elm.y === foodY);
+                if (has) return getFood();
+
                 ctx.fillStyle = 'red';
                 console.log('食物坐标', foodX, foodY);
                 ctx.fillRect(foodX, foodY, size, size);
