@@ -53,7 +53,7 @@
 
                     // 每次绘画前 需要清空画布
                     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                    
+
                     // 清空画布后 先绘制 map 中已绘制的图形
                     map.forEach(function (elm) {
                         ctx.strokeStyle = elm.drawColor;
@@ -75,6 +75,21 @@
                     });
 
                     myCanvas.onmousemove = null;
+                }
+            }
+
+
+            // control+z 实现撤销画布
+            document.onkeyup = function (ev) {
+                if (ev.ctrlKey && ev.keyCode === 90) {
+                    map.pop();
+
+                    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+                    map.forEach(function (elm) {
+                        ctx.strokeStyle = elm.drawColor;
+                        ctx.strokeRect(elm.starX, elm.starY, elm.endX - elm.starX, elm.endY - elm.starY);
+                    })
                 }
             }
         }
