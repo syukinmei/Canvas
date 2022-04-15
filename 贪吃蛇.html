@@ -118,8 +118,7 @@
                     ctx.clearRect(first.x, first.y, size, size);
                 }
 
-
-                ctx.fillRect(x, y, size, size); // -.5会有间隔效果
+                ctx.fillRect(x, y, size - .3, size - .3); // -.5会有间隔效果
 
                 // 判断是否吃到食物
                 if (x === foodX && y === foodY) {
