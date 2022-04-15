@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自定义画板</title>
+
+    <!-- css -->
+    <style type="text/css">
+        #canvasBox {
+            width: 500px;
+            height: 500px;
+            margin: 0 auto;
+            border: 1px solid black;
+        }
+
+        #radioBox {
+            text-align: center;
+        }
+    </style>
+
+    <!-- js -->
+    <script type="text/javascript">
+        window.onload = function () {
+            let myCanvas = document.getElementById('myCanvas');
+            let color = document.getElementsByName('color');
+            let ctx = myCanvas.getContext('2d');
+
+            let drawColor = 'black'; // 选中的颜色，默认黑色
+
+            const map = []; // 用于存放已绘制的图形信息
+
+            // 设置颜色
+            for (let i = 0; i < color.length; i++) {
+                color[i].onclick = function () {
+                    drawColor = this.value;
+                }
+            }
+
+
+            myCanvas.onmousedown = function (ev) {
+                console.log('down');
+                let starX = ev.offsetX, // 开始 x 坐标
+                    starY = ev.offsetY, // 开始 y 坐标
+                    endX,
+                    endY;
+
+                myCanvas.onmousemove = function (e) {
+                    endX = e.offsetX;
+                    endY = e.offsetY;
+
+                    // 每次绘画前 需要清空画布
+                    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                    
+                    // 清空画布后 先绘制 map 中已绘制的图形
+                    map.forEach(function (elm) {
+                        ctx.strokeStyle = elm.drawColor;
+                        ctx.strokeRect(elm.starX, elm.starY, elm.endX - elm.starX, elm.endY - elm.starY);
+                    })
+
+                    ctx.strokeStyle = drawColor;
+                    ctx.strokeRect(starX, starY, endX - starX, endY - starY);
+                }
+
+                myCanvas.onmouseup = function () {
+                    console.log('up');
+                    map.push({
+                        starX,
+                        starY,
+                        endX,
+                        endY,
+                        drawColor,
+                    });
+
+                    myCanvas.onmousemove = null;
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="canvasBox">
+        <canvas id="myCanvas" width="500" height="500">
+            您的浏览器不支持 canvas 元素，请升级至最新版本。
+        </canvas>
+    </div>
+    <div id="radioBox">
+        <input type="radio" name="color" value="black" checked>black
+        <input type="radio" name="color" value="red">red
+        <input type="radio" name="color" value="blue">blue
+        <input type="radio" name="color" value="pink">pink
+        <input type="radio" name="color" value="orange">orange
+    </div>
+
+</body>
+
+</html>
