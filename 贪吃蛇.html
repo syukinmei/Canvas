@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇</title>
+
+    <!-- css -->
+    <style type="text/css">
+        #snake {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            border: 1px solid black;
+        }
+    </style>
+
+    <!-- js -->
+    <script type="text/javascript">
+        window.onload = function () {
+            let myCanvas = document.getElementById('myCanvas');
+            let ctx = myCanvas.getContext('2d');
+
+            let direction = 39; // 方向，默认右边 使蛇已开始向右移动
+
+            let timer = null;
+
+            // 蛇的初始信息
+            let x = 10, // 蛇头 x 坐标
+                y = 10, // 蛇头 y 坐标
+                size = 10, // 每一节蛇的大小
+                len = 10, // 长度
+                speed = 100; // 速度
+
+            // 用于记录蛇的运动轨迹
+            let map = [];
+
+            // 食物坐标
+            let foodX, foodY;
+            function getFood() {
+                foodX = Math.floor(Math.random() * ctx.canvas.width / size) * size;
+                foodY = Math.floor(Math.random() * ctx.canvas.width / size) * size;
+
+                ctx.fillStyle = 'red';
+                console.log('食物坐标', foodX, foodY);
+                ctx.fillRect(foodX, foodY, size, size);
+            }
+            getFood();
+
+            // 游戏开始的方法
+            function gameStar() {
+                timer = setInterval(game, speed);
+            }
+            gameStar();
+
+            // 键盘事件用于改变方向
+            document.onkeyup = function (e) {
+                // 控制蛇的方向
+                if (37 <= e.keyCode && e.keyCode <= 40) direction = e.keyCode;
+
+                // 控制游戏开始暂停
+                // if (e.keyCode === 32) {
+                //     if (timer) {
+                //         clearInterval(timer);
+                //         timer = null;
+                //         console.log('暂停');
+                //     } else {
+                //         gameStar();
+                //     }
+                // }
+            }
+
+
+            // 游戏失败的方法
+            function gameOver() {
+                clearInterval(timer);
+                alert('game over');
+                window.location.reload(); // 刷新页面
+            }
+
+
+            function game() {
+                ctx.fillStyle = 'green';
+
+                switch (direction) {
+                    case 37: // 左
+                        x = x - size;
+                        break;
+                    case 38: // 上
+                        y = y - size;
+                        break;
+                    case 39: // 右
+                        x = x + size;
+                        break;
+                    case 40: // 下
+                        y = y + size;
+                        break;
+                    default:
+                        break;
+                }
+
+                // 边界碰撞检测
+                if (x >= ctx.canvas.width || x < 0 || y >= ctx.canvas.height || y < 0) gameOver();
+
+                // 自身碰撞检测
+                let flag = map.some(elm => elm.x === x && elm.y === y);
+                if (flag) gameOver();
+
+
+                // 通过map记录蛇的坐标，通过保持 map数据的长度===蛇的len 实现蛇的大小；
+                // 当map数据长度 > 蛇的len ，需要查处蛇尾的的元素。
+                map.push({ x, y });
+                if (map.length > len) {
+                    // 数据长度 > 蛇的长度 删除数组在的第一个元素 并 擦除画布的该区域
+                    let first = map.shift();
+                    ctx.clearRect(first.x, first.y, size, size);
+                }
+
+
+                ctx.fillRect(x, y, size, size); // -.5会有间隔效果
+
+                // 判断是否吃到食物
+                if (x === foodX && y === foodY) {
+                    len++;
+                    getFood();
+                }
+            }
+            game();
+        }
+    </script>
+</head>
+
+<body>
+    <div id="snake">
+        <canvas id="myCanvas" width="300" height="300">
+            您的浏览器不支持 canvas 元素，请升级至最新版本。
+        </canvas>
+    </div>
+</body>
+
+</html>
