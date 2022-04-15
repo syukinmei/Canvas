@@ -5,3 +5,9 @@
 <p align='center'>
 <img src="./img/clock_effect_picture .png" width = "300" />
 </p>
+
+
+### 贪吃蛇效果
+<p align='center'>
+<img src="./img/贪吃蛇.gif" />
+</p>
